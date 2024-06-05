@@ -2,9 +2,13 @@ function fixMathDirection() {
   const mathSpans = document.querySelectorAll('span.katex, .MathJax');
   
   mathSpans.forEach(span => {
+    span.style.unicodeBidi = 'isolate';
     span.style.direction = 'ltr';
-    span.style.display = 'inline-block';
     span.classList.add('math-direction-fixed');
+
+    if (span.scrollWidth > span.clientWidth) {
+      span.style.overflowX = 'auto';
+    }
   });
 }
 

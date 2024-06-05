@@ -1,16 +1,25 @@
 .math-direction-fixed {
-  unicode-bidi: isolate;
-  text-align: left;
+    unicode-bidi: isolate;
+    direction: ltr;
+    text-align: left;
 }
 
-/* Optional: Style for the options page */
-body {
-  font-family: Arial, sans-serif;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
+/* Optional: For formulas that shouldn't break across lines */
+.math-direction-fixed.long-formula {
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
 }
 
-h1 { color: #333; }
-label { display: block; margin: 10px 0; }
-button { margin-top: 15px; }
+h1 {
+    color: #333;
+}
+
+label {
+    display: block;
+    margin: 10px 0;
+}
+
+button {
+    margin-top: 15px;
+}
