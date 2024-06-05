@@ -1,38 +1,26 @@
-.rtl-context .math-direction-fixed {
+/* Base styles for all fixed math */
+.math-direction-fixed {
     direction: ltr !important;
-    vertical-align: middle !important;
-    unicode-bidi: isolate;
-}
-
-.math-direction-fixed:not(.display) {
+    unicode-bidi: isolate !important;
     display: inline-block !important;
-    width: fit-content !important;
     text-align: left !important;
-    white-space: nowrap;
-}
-
-.math-direction-fixed.display {
+  }
+  
+  /* Styles for inline math */
+  .math-direction-fixed:not(.display-math) {
+    vertical-align: middle !important;
+    margin: 0 0.2em !important; /* Space around inline math */
+  }
+  
+  /* Styles for display math */
+  .math-direction-fixed.display-math {
     display: block !important;
     width: 100% !important;
     text-align: center !important;
-}
-
-/* Optional: For formulas that shouldn't break across lines */
-.math-direction-fixed.long-formula {
-    white-space: nowrap;
-    display: inline-block;
-    vertical-align: middle;
-}
-
-h1 {
-    color: #333;
-}
-
-label {
-    display: block;
-    margin: 10px 0;
-}
-
-button {
-    margin-top: 15px;
-}
+    margin: 1em 0 !important; /* More space above and below display math */
+  }
+  
+  /* RTL page overrides */
+  html[dir="rtl"] .math-direction-fixed:not(.display-math) {
+    text-align: right !important;
+  }

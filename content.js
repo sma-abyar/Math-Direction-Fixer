@@ -1,100 +1,3 @@
-const mathSpans = document.querySelectorAll(mathSelectors);
-function fixMathDirection() {
-  // const mathSpans = document.querySelectorAll('span.katex, .MathJax');
-
-  mathSpans.forEach(span => {
-    const isDisplayMath = span.classList.contains('display') ||
-      window.getComputedStyle(span).display === 'block';
-
-    span.style.direction = 'ltr';
-    span.style.display = isDisplayMath ? 'block' : 'inline-block';
-    span.style.width = isDisplayMath ? '100%' : 'fit-content';
-    span.style.textAlign = isDisplayMath ? 'center' : 'left';
-    span.style.verticalAlign = 'middle';
-    span.classList.add('math-direction-fixed');
-  });
-}
-
-// Run on page load and content change
-document.addEventListener('DOMContentLoaded', fixMathDirection);
-document.addEventListener('DOMSubtreeModified', debounceFixMathDirection);
-
-// Debounce function to prevent excessive calls
-function debounce(func, wait) {
-  let timeout;
-  return function () {
-    const context = this, args = arguments;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(context, args), wait);
-  };
-}
-
-const debounceFixMathDirection = debounce(fixMathDirection, 100);
-
-function applySettings() {
-  chrome.storage.sync.get({
-    applyToKatex: true,
-    applyToMathJax: true,
-    autoRun: true
-  }, settings => {
-    if (settings.autoRun) {
-      document.removeEventListener('DOMSubtreeModified', debounceFixMathDirection);
-      if (settings.applyToKatex && settings.applyToMathJax) {
-        fixMathDirection();
-      } else {
-        const selector = [
-          settings.applyToKatex ? 'span.katex' : null,
-          settings.applyToMathJax ? '.MathJax' : null
-        ].filter(Boolean).join(', ');
-
-        if (selector) {
-          const spans = document.querySelectorAll(selector);
-          spans.forEach(span => {
-            span.style.direction = 'ltr';
-            span.style.display = 'inline-block';
-            span.classList.add('math-direction-fixed');
-          });
-        }
-      }
-      document.addEventListener('DOMSubtreeModified', debounceFixMathDirection);
-    }
-  });
-}
-
-function debounce(func, wait) {
-  let timeout;
-  return function () {
-    const context = this, args = arguments;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(context, args), wait);
-  };
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  applySettings();
-  chrome.runtime.onMessage.addListener(message => {
-    if (message.action === 'updateSettings') {
-      applySettings();
-    }
-  });
-});
-
-observer.observe(document.body, { childList: true, subtree: true });
-
-function fixMathSpanDirection(span) {
-  const isDisplayMath = span.classList.contains('display') ||
-    window.getComputedStyle(span).display === 'block';
-
-  span.style.direction = 'ltr';
-  span.style.display = isDisplayMath ? 'block' : 'inline-block';
-  span.style.width = isDisplayMath ? '100%' : 'fit-content';
-  span.style.textAlign = isDisplayMath ? 'center' : 'left';
-  span.style.verticalAlign = 'middle';
-  span.classList.add('math-direction-fixed');
-}
-
-const isRTLContext = window.getComputedStyle(span.parentElement).direction === 'rtl';
-span.classList.toggle('rtl-context', isRTLContext);
 // List of selectors for various math libraries
 const mathSelectors = [
   'span.katex',              // KaTeX
@@ -104,18 +7,62 @@ const mathSelectors = [
   '[data-math-type]'      // Generic attribute for math
 ].join(', ');
 
-// Function to find and fix all math spans in a given element
+// Function to fix a single math span
+function fixMathSpanDirection(span) {
+  const isDisplayMath = span.classList.contains('display') || 
+                      window.getComputedStyle(span).display === 'block';
+
+  span.setAttribute('dir', 'ltr');
+  span.style.display = isDisplayMath ? 'block' : 'inline-block';
+  span.style.textAlign = isDisplayMath ? 'center' : 'left';
+  span.style.width = isDisplayMath ? '100%' : 'auto';
+  span.classList.add('math-direction-fixed');
+
+  if (isDisplayMath) {
+    span.classList.add('display-math');
+  }
+}
+
+// Function to fix all math spans in a given element
 function fixMathInElement(element) {
   const mathSpans = element.querySelectorAll(mathSelectors);
   mathSpans.forEach(fixMathSpanDirection);
 }
 
-// Fix math spans on page load
-document.addEventListener('DOMContentLoaded', () => {
-  fixMathInElement(document.body);
-});
+// Load user preferences
+function loadPreferences() {
+  return new Promise(resolve => {
+    chrome.storage.sync.get({
+      fixKatex: true,
+      fixMathJax: true,
+      fixOthers: true,
+      autoRun: true
+    }, resolve);
+  });
+}
 
-// Set up an observer to fix math spans in dynamically added content
+// Apply user preferences to selectors
+function applyPreferences(prefs) {
+  let activeSelectors = [];
+  if (prefs.fixKatex) activeSelectors.push('span.katex');
+  if (prefs.fixMathJax) activeSelectors.push('.MathJax');
+  if (prefs.fixOthers) {
+    activeSelectors = activeSelectors.concat(['math', '.latex-math', '[data-math-type]']);
+  }
+  return activeSelectors.join(', ');
+}
+
+// Main function to fix math on the page
+async function fixMathDirection() {
+  const prefs = await loadPreferences();
+  if (!prefs.autoRun) return;
+
+  const activeSelectors = applyPreferences(prefs);
+  const mathSpans = document.querySelectorAll(activeSelectors);
+  mathSpans.forEach(fixMathSpanDirection);
+}
+
+// Set up mutation observer for dynamic content
 const observer = new MutationObserver(mutations => {
   for (const mutation of mutations) {
     if (mutation.type === 'childList') {
@@ -128,5 +75,15 @@ const observer = new MutationObserver(mutations => {
   }
 });
 
-// Start observing the entire document for changes
-observer.observe(document.body, { childList: true, subtree: true });
+// Run when the page loads and set up observer
+document.addEventListener('DOMContentLoaded', () => {
+  fixMathDirection();
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+
+// Listen for preference changes
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'preferencesUpdated') {
+    fixMathDirection();
+  }
+});

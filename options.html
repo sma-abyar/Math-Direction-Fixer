@@ -2,22 +2,21 @@
 <html>
 <head>
   <title>Math Direction Fixer Settings</title>
-  <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
   <h1>Math Direction Fixer Settings</h1>
   <form>
     <label>
-      <input type="checkbox" id="applyToKatex">
-      Apply to KaTeX formulas
+      <input type="checkbox" id="fixKatex"> Fix KaTeX formulas
     </label><br>
     <label>
-      <input type="checkbox" id="applyToMathJax">
-      Apply to MathJax formulas
+      <input type="checkbox" id="fixMathJax"> Fix MathJax formulas
     </label><br>
     <label>
-      <input type="checkbox" id="autoRun">
-      Automatically run on page load
+      <input type="checkbox" id="fixOthers"> Fix other math formulas
+    </label><br>
+    <label>
+      <input type="checkbox" id="autoRun"> Run automatically
     </label><br>
     <button type="submit">Save</button>
   </form>
