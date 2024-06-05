@@ -1,0 +1,22 @@
+/* All fixed math elements */
+.math-direction-fixed {
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+    display: inline-block !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+  }
+  
+  /* Display math */
+  .display-math-fixed {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin: 1em auto !important;
+  }
+  
+  /* Ensure no interference from page styles */
+  .math-direction-fixed * {
+    unicode-bidi: isolate !important;
+    direction: ltr !important;
+  }
