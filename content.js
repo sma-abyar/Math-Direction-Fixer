@@ -1,89 +1,75 @@
-// List of selectors for various math libraries
+// All known math libraries and their selectors
 const mathSelectors = [
-  'span.katex',              // KaTeX
-  '.MathJax',              // MathJax
-  'math',                  // MathML
-  '.latex-math',          // Custom LaTeX renderers
-  '[data-math-type]'      // Generic attribute for math
+  'span.katex, .katex-mathml',             // KaTeX
+  '.MathJax, .MathJax_Display',           // MathJax
+  'math, .MathMLMathElement',             // MathML
+  '.latex-math, .latex-display-math',     // Custom LaTeX
+  '[data-math-type], [data-math-display]' // Generic attributes
 ].join(', ');
 
-// Function to fix a single math span
-function fixMathSpanDirection(span) {
-  const isDisplayMath = span.classList.contains('display') || 
-                      window.getComputedStyle(span).display === 'block';
+// Function to fix all math on the page
+function fixAllMathDirection() {
+  const mathElements = document.querySelectorAll(mathSelectors);
 
-  span.setAttribute('dir', 'ltr');
-  span.style.display = isDisplayMath ? 'block' : 'inline-block';
-  span.style.textAlign = isDisplayMath ? 'center' : 'left';
-  span.style.width = isDisplayMath ? '100%' : 'auto';
-  span.classList.add('math-direction-fixed');
+  mathElements.forEach(el => {
+    const isBlock = window.getComputedStyle(el).display === 'block' || 
+                   el.classList.contains('display') || 
+                   el.classList.contains('MathJax_Display') ||
+                   el.getAttribute('data-math-display') === 'true';
 
-  if (isDisplayMath) {
-    span.classList.add('display-math');
-  }
-}
+    el.setAttribute('dir', 'ltr');
+    el.style.direction = 'ltr';
+    el.style.unicodeBidi = 'isolate';
 
-// Function to fix all math spans in a given element
-function fixMathInElement(element) {
-  const mathSpans = element.querySelectorAll(mathSelectors);
-  mathSpans.forEach(fixMathSpanDirection);
-}
+    if (isBlock) {
+      el.style.display = 'block';
+      el.style.width = '100%';
+      el.style.textAlign = 'center';
+      el.classList.add('display-math-fixed');
+    } else {
+      el.style.display = 'inline-block';
+      el.style.textAlign = 'left';
+      el.style.verticalAlign = 'middle';
+    }
 
-// Load user preferences
-function loadPreferences() {
-  return new Promise(resolve => {
-    chrome.storage.sync.get({
-      fixKatex: true,
-      fixMathJax: true,
-      fixOthers: true,
-      autoRun: true
-    }, resolve);
+    el.classList.add('math-direction-fixed');
   });
 }
 
-// Apply user preferences to selectors
-function applyPreferences(prefs) {
-  let activeSelectors = [];
-  if (prefs.fixKatex) activeSelectors.push('span.katex');
-  if (prefs.fixMathJax) activeSelectors.push('.MathJax');
-  if (prefs.fixOthers) {
-    activeSelectors = activeSelectors.concat(['math', '.latex-math', '[data-math-type]']);
-  }
-  return activeSelectors.join(', ');
-}
-
-// Main function to fix math on the page
-async function fixMathDirection() {
-  const prefs = await loadPreferences();
-  if (!prefs.autoRun) return;
-
-  const activeSelectors = applyPreferences(prefs);
-  const mathSpans = document.querySelectorAll(activeSelectors);
-  mathSpans.forEach(fixMathSpanDirection);
-}
-
-// Set up mutation observer for dynamic content
+// Function to fix any new math elements added to the page
 const observer = new MutationObserver(mutations => {
+  let needsFix = false;
   for (const mutation of mutations) {
     if (mutation.type === 'childList') {
-      mutation.addedNodes.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          fixMathInElement(node);
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType === Node.ELEMENT_NODE && 
+            (node.matches(mathSelectors) || node.querySelector(mathSelectors))) {
+          needsFix = true;
+          break;
         }
-      });
+      }
     }
+  }
+  if (needsFix) {
+    fixAllMathDirection();
   }
 });
 
-// Run when the page loads and set up observer
+// Initial fix and start observing
 document.addEventListener('DOMContentLoaded', () => {
-  fixMathDirection();
+  fixAllMathDirection();
   observer.observe(document.body, { childList: true, subtree: true });
 });
 
-// Listen for preference changes
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'preferencesUpdated') {
-    fixMathDirection();
+// Also fix every second as a fallback
+setInterval(fixAllMathDirection, 1000);
+
+// Fix again when page becomes visible (for tabs that were in background)
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    fixAllMathDirection();
   }
 });
+
+// Fix again after images and other resources load
+window.addEventListener('load', fixAllMathDirection);

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Fixes the direction of math formulas in RTL text, making KaTeX spans LTR.",
   "homepage_url": "https://github.com/yourusername/math-direction-fixer",
-  "author": "Your Name",
+  "author": "SMA A",
 
   "permissions": [
     "activeTab",
