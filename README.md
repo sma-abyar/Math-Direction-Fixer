@@ -15,7 +15,7 @@ This browser extension ensures that all math formulas on RTL (right-to-left) web
 
 ### Chrome
 
-1. Download the latest release from the [releases page](https://github.com/sma-abyar/GPT-Math-Detector/releases).
+1. Download the latest release from the [releases page](https://github.com/sma-abyar/Math-Direction-Fixer/releases).
 2. Extract the ZIP file.
 3. In Chrome, go to `chrome://extensions/`.
 4. Enable "Developer mode" (top-right corner).
@@ -23,7 +23,7 @@ This browser extension ensures that all math formulas on RTL (right-to-left) web
 
 ### Firefox
 
-1. Download the latest release from the [releases page](https://github.com/sma-abyar/GPT-Math-Detector/releases).
+1. Download the latest release from the [releases page](https://github.com/sma-abyar/Math-Direction-Fixer/releases).
 2. Extract the ZIP file.
 3. In Firefox, go to `about:debugging#/runtime/this-firefox`.
 4. Click "Load Temporary Add-on" and select the `manifest.json` file from the extracted directory.
@@ -32,7 +32,7 @@ This browser extension ensures that all math formulas on RTL (right-to-left) web
 
 The extension automatically runs on all websites and fixes the direction of any detected math formulas. No user intervention or configuration is required.
 
-If you encounter any issues or want to report a bug, please [open an issue](https://github.com/sma-abyar/GPT-Math-Detector/issues/new) on this repository.
+If you encounter any issues or want to report a bug, please [open an issue](https://github.com/sma-abyar/Math-Direction-Fixer/issues/new) on this repository.
 
 ## Contributing
 
