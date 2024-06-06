@@ -54,4 +54,3 @@ This extension was developed with the help of the following resources:
 
 - [MDN Web Docs](https://developer.mozilla.org/en-US/) - Documentation for web technologies
 - [Stack Overflow](https://stackoverflow.com/) - Solutions to common programming problems
-- [ChatGPT](https://chat.openai.com/) - AI assistant for code generation and explanations
