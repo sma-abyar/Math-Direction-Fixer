@@ -27,6 +27,7 @@ This browser extension ensures that all math formulas on RTL (right-to-left) web
 2. Extract the ZIP file.
 3. In Firefox, go to `about:debugging#/runtime/this-firefox`.
 4. Click "Load Temporary Add-on" and select the `manifest.json` file from the extracted directory.
+5. Also you can downlaod this extension from Mozilla add-ons and Install it automatically: [download link](https://addons.mozilla.org/addon/math-direction-fixer/)
 
 ## Usage
 
