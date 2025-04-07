@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Math Direction Fixer",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Fixes the direction of math formulas in RTL text, making KaTeX spans LTR.",
   "homepage_url": "https://github.com/sma-abyar/GPT-Math-Detector",
   "author": "SMA A",

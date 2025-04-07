@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Math Direction Fixer",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Forces all math formulas to display in LTR direction on RTL pages.",
 
   "permissions": [

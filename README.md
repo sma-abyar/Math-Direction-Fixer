@@ -14,20 +14,20 @@ This browser extension ensures that all math formulas on RTL (right-to-left) web
 ## Installation
 
 ### Chrome
-
 1. Download the latest release from the [releases page](https://github.com/sma-abyar/Math-Direction-Fixer/releases).
 2. Extract the ZIP file.
-3. In Chrome, go to `chrome://extensions/`.
-4. Enable "Developer mode" (top-right corner).
-5. Click "Load unpacked" and select the extracted directory.
+3. Replace `manifest.json` with `manifest-chrome.json` (rename `manifest-chrome.json` to `manifest.json`).
+4. In Chrome, go to `chrome://extensions/`.
+5. Enable "Developer mode" (top-right corner).
+6. Click "Load unpacked" and select the extracted directory.
 
 ### Firefox
-
 1. Download the latest release from the [releases page](https://github.com/sma-abyar/Math-Direction-Fixer/releases).
 2. Extract the ZIP file.
-3. In Firefox, go to `about:debugging#/runtime/this-firefox`.
-4. Click "Load Temporary Add-on" and select the `manifest.json` file from the extracted directory.
-5. Also you can downlaod this extension from Mozilla add-ons and Install it automatically: [download link](https://addons.mozilla.org/addon/math-direction-fixer/)
+3. Replace `manifest.json` with `manifest-firefox.json` (rename `manifest-firefox.json` to `manifest.json`).
+4. In Firefox, go to `about:debugging#/runtime/this-firefox`.
+5. Click "Load Temporary Add-on" and select the `manifest.json` file from the extracted directory.
+6. Alternatively, you can download this extension from Mozilla Add-ons and install it automatically: [download link](https://addons.mozilla.org/addon/math-direction-fixer/)
 
 ## Usage
 
